@@ -1,0 +1,57 @@
+{
+  "name": "toastwave",
+  "version": "0.1.0",
+  "description": "Lightweight React toast notifications with deduplication, countdown timers, theming, and container scoping.",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.9.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/preset-react": "^7.23.3"
+  },
+  "keywords": [
+    "react",
+    "toast",
+    "notification",
+    "toastwave",
+    "snackbar",
+    "alert",
+    "lightweight",
+    "dedup",
+    "theming"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/papiguy/toastwave"
+  },
+  "license": "MIT",
+  "author": "",
+  "sideEffects": false
+}

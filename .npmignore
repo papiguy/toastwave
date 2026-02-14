@@ -1,0 +1,5 @@
+examples/
+src/
+rollup.config.mjs
+.github/
+node_modules/
