@@ -14,6 +14,45 @@ const _unreg = (k) => _active.delete(k);
 
 // ── Public API ──────────────────────────────────────────────────
 
+// ── Action Presets ───────────────────────────────────────────────
+
+const actionPresets = {
+  undo: (onUndo) => ({
+    label: "Undo",
+    onClick: onUndo,
+  }),
+};
+
+/**
+ * Register a custom action preset.
+ * @param {string} name - Preset name
+ * @param {Function} factory - Factory function (onAction) => { label, onClick }
+ */
+const registerActionPreset = (name, factory) => {
+  actionPresets[name] = factory;
+};
+
+/**
+ * Resolve action from preset string or custom object.
+ * @param {string|Object} action - "undo", { preset: "undo", onAction }, or { label, onClick }
+ * @returns {Object|null} Resolved action object
+ */
+const resolveAction = (action) => {
+  if (!action) return null;
+  if (typeof action === "string") {
+    // Preset name only (e.g., "undo") - return preset with no-op
+    const factory = actionPresets[action];
+    return factory ? factory(() => {}) : null;
+  }
+  if (action.preset) {
+    // Preset with callback (e.g., { preset: "undo", onAction: () => {...} })
+    const factory = actionPresets[action.preset];
+    return factory ? factory(action.onAction || (() => {})) : null;
+  }
+  // Custom action object { label, onClick }
+  return action;
+};
+
 /**
  * Show a toast notification.
  *
@@ -22,9 +61,7 @@ const _unreg = (k) => _active.delete(k);
  * @param {string} [opts.type="default"] - Toast type: "default"|"success"|"error"|"warning"|"info"|"loading"
  * @param {string} [opts.description] - Secondary text below the message
  * @param {number} [opts.duration=5000] - Auto-dismiss duration in ms. Use Infinity to persist.
- * @param {Object} [opts.action] - Action button config
- * @param {string} opts.action.label - Button label text
- * @param {Function} opts.action.onClick - Callback when button is clicked
+ * @param {string|Object} [opts.action] - Action button: preset name ("undo"), preset config ({ preset: "undo", onAction }), or custom ({ label, onClick })
  * @param {string} [opts.dedupeKey] - Custom dedup key. Defaults to `${type}::${message}`
  * @param {string} [opts.countdownText] - Custom countdown text. Use `{seconds}` as placeholder.
  * @param {string} [opts.pausedText] - Custom text shown when timer is paused.
@@ -36,6 +73,7 @@ const toast = (message, opts = {}) => {
   const dk = opts.dedupeKey || `${opts.type || "default"}::${message}`;
   if (_active.has(dk)) return _active.get(dk);
   const id = ++_id;
+  const resolvedAction = resolveAction(opts.action);
   const t = {
     id,
     message,
@@ -46,6 +84,7 @@ const toast = (message, opts = {}) => {
     pausedText: "Timer paused",
     stopText: "Click to stop.",
     ...opts,
+    action: resolvedAction,
     dedupeKey: dk,
     createdAt: Date.now(),
   };
@@ -518,5 +557,5 @@ function Toaster({ position = "bottom-right", theme = "dark", container }) {
 
 // ── Exports ─────────────────────────────────────────────────────
 
-export { toast, Toaster, darkTheme, lightTheme, resolveTheme };
+export { toast, Toaster, darkTheme, lightTheme, resolveTheme, registerActionPreset };
 export default toast;

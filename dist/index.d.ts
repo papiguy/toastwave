@@ -26,12 +26,27 @@ export interface ToastTheme {
 
 // ── Toast Options ───────────────────────────────────────────────
 
+/** Custom action button configuration */
 export interface ToastAction {
   /** Button label text */
   label: string;
   /** Callback when button is clicked */
   onClick: () => void;
 }
+
+/** Preset action with callback */
+export interface ToastActionPreset {
+  /** Preset name (e.g., "undo") */
+  preset: string;
+  /** Callback when the action is triggered */
+  onAction?: () => void;
+}
+
+/** Action can be a preset name, preset config, or custom action */
+export type ToastActionInput = string | ToastActionPreset | ToastAction;
+
+/** Factory function for creating action presets */
+export type ActionPresetFactory = (onAction: () => void) => ToastAction;
 
 export interface ToastOptions {
   /** Toast type */
@@ -40,8 +55,8 @@ export interface ToastOptions {
   description?: string;
   /** Auto-dismiss in ms. Use Infinity to persist. Default: 5000 */
   duration?: number;
-  /** Action button config. Only shown when provided. */
-  action?: ToastAction;
+  /** Action button: preset name ("undo"), preset config ({ preset: "undo", onAction }), or custom ({ label, onClick }) */
+  action?: ToastActionInput;
   /** Custom dedup key. Defaults to `${type}::${message}` */
   dedupeKey?: string;
   /** Countdown text template. Use {seconds} and {s} as placeholders. */
@@ -102,3 +117,12 @@ export declare const Toaster: FC<ToasterProps>;
 export declare const darkTheme: ToastTheme;
 export declare const lightTheme: ToastTheme;
 export declare function resolveTheme(themeOrName: "dark" | "light" | ToastTheme): ToastTheme;
+
+// ── Action Presets ───────────────────────────────────────────────
+
+/**
+ * Register a custom action preset.
+ * @param name - Preset name (e.g., "retry", "dismiss")
+ * @param factory - Factory function that takes onAction callback and returns { label, onClick }
+ */
+export declare function registerActionPreset(name: string, factory: ActionPresetFactory): void;
