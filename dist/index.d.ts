@@ -57,6 +57,8 @@ export interface ToastOptions {
   duration?: number;
   /** Action button: preset name ("undo"), preset config ({ preset: "undo", onAction }), or custom ({ label, onClick }) */
   action?: ToastActionInput;
+  /** Custom icon element. Overrides the default type icon. Use with any icon library (Hero Icons, Lucide, etc.) */
+  icon?: ReactNode;
   /** Custom dedup key. Defaults to `${type}::${message}` */
   dedupeKey?: string;
   /** Countdown text template. Use {seconds} and {s} as placeholders. */

@@ -6,6 +6,7 @@ Lightweight React toast notifications with zero CSS dependencies.
 - **Deduplication** — identical messages won't stack
 - **Countdown timer** with configurable text, pause-on-hover, and "click to stop"
 - **Action presets** — built-in "undo", "retry" or custom actions
+- **Custom icons** — use any React icon library (Hero Icons, Lucide, etc.)
 - **Theming** — dark, light, or fully custom theme objects
 - **Container scoping** — render at window level or inside any element
 - **Promise toasts** — loading → success/error transitions
@@ -63,6 +64,7 @@ toast.loading('Uploading...'); // duration: Infinity
 | `description` | `string` | — | Secondary text below the title |
 | `duration` | `number` | `5000` | Auto-dismiss in ms. Use `Infinity` to persist. |
 | `action` | `string \| object` | — | Preset name, preset config, or custom action |
+| `icon` | `ReactNode` | — | Custom icon element (overrides default type icon) |
 | `dedupeKey` | `string` | `${type}::${message}` | Custom key for deduplication |
 | `showCountdown` | `boolean` | `true` | Show/hide the countdown footer |
 | `countdownText` | `string` | `"This message will close in {seconds} second{s}."` | Countdown template |
@@ -110,6 +112,29 @@ registerActionPreset('retry', (onRetry) => ({
 // Now use it anywhere
 toast.error('Request failed', {
   action: { preset: 'retry', onAction: () => fetchData() },
+});
+```
+
+### Custom Icons
+
+Use any React icon library by passing the `icon` prop:
+
+```jsx
+import { RocketLaunchIcon } from '@heroicons/react/24/outline';
+
+// Override default icon with Hero Icons
+toast('Launching soon!', {
+  icon: <RocketLaunchIcon style={{ width: 20, height: 20, color: '#f472b6' }} />,
+});
+
+// Works with any toast type
+toast.success('Deployed!', {
+  icon: <RocketLaunchIcon style={{ width: 20, height: 20, color: '#4ade80' }} />,
+});
+
+// Or use Lucide, FontAwesome, custom SVGs, etc.
+toast.info('Syncing...', {
+  icon: <CloudIcon className="w-5 h-5 text-blue-400" />,
 });
 ```
 

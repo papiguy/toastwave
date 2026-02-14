@@ -1,5 +1,12 @@
 import React, { useState, useRef } from "react";
 import { toast, Toaster, registerActionPreset, darkTheme, lightTheme } from "toastwave";
+import {
+  RocketLaunchIcon,
+  SparklesIcon,
+  HeartIcon,
+  BellAlertIcon,
+  CloudArrowUpIcon,
+} from "@heroicons/react/24/outline";
 
 // Register a custom action preset
 registerActionPreset("retry", (onRetry) => ({
@@ -268,6 +275,69 @@ export default function App() {
                 }
               >
                 Custom Action
+              </button>
+            </div>
+          </section>
+
+          {/* Custom Icons */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>
+              Custom Icons
+              <span style={styles.badge}>New</span>
+            </h2>
+            <p style={styles.cardDesc}>
+              Use any React icon library (Hero Icons, Lucide, etc.) by passing the <code>icon</code> prop.
+            </p>
+            <div style={styles.btnGroup}>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast("Launching soon!", {
+                    icon: <RocketLaunchIcon style={{ width: 20, height: 20, color: "#f472b6" }} />,
+                  })
+                }
+              >
+                Rocket
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.success("You're awesome!", {
+                    icon: <SparklesIcon style={{ width: 20, height: 20, color: "#fbbf24" }} />,
+                  })
+                }
+              >
+                Sparkles
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast("Thanks for the love!", {
+                    icon: <HeartIcon style={{ width: 20, height: 20, color: "#f87171" }} />,
+                  })
+                }
+              >
+                Heart
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.warning("New notification", {
+                    icon: <BellAlertIcon style={{ width: 20, height: 20, color: "#a78bfa" }} />,
+                  })
+                }
+              >
+                Bell
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.info("Syncing to cloud...", {
+                    icon: <CloudArrowUpIcon style={{ width: 20, height: 20, color: "#60a5fa" }} />,
+                  })
+                }
+              >
+                Cloud
               </button>
             </div>
           </section>

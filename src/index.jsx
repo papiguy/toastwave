@@ -62,6 +62,7 @@ const resolveAction = (action) => {
  * @param {string} [opts.description] - Secondary text below the message
  * @param {number} [opts.duration=5000] - Auto-dismiss duration in ms. Use Infinity to persist.
  * @param {string|Object} [opts.action] - Action button: preset name ("undo"), preset config ({ preset: "undo", onAction }), or custom ({ label, onClick })
+ * @param {React.ReactNode} [opts.icon] - Custom icon element. Overrides the default type icon.
  * @param {string} [opts.dedupeKey] - Custom dedup key. Defaults to `${type}::${message}`
  * @param {string} [opts.countdownText] - Custom countdown text. Use `{seconds}` as placeholder.
  * @param {string} [opts.pausedText] - Custom text shown when timer is paused.
@@ -350,8 +351,10 @@ function ToastItem({ data, onDismiss, position, theme }) {
     >
       {/* Content */}
       <div style={{ padding: "14px 16px", display: "flex", alignItems: "flex-start", gap: 12 }}>
-        {data.type !== "default" && (
-          <div style={{ flexShrink: 0, marginTop: 1, color: th.title }}>{iconMap[data.type]}</div>
+        {(data.icon || data.type !== "default") && (
+          <div style={{ flexShrink: 0, marginTop: 1, color: th.title }}>
+            {data.icon || iconMap[data.type]}
+          </div>
         )}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: th.title, lineHeight: 1.4 }}>
