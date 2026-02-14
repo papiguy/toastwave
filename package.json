@@ -19,11 +19,11 @@
   ],
   "scripts": {
     "build": "rollup -c && cp src/index.d.ts dist/",
-    "dev": "npm run build && npm run playground",
+    "dev": "bun run build && bun run playground",
     "watch": "rollup -c -w",
-    "playground": "cd playground && npm run dev",
-    "playground:install": "cd playground && npm install",
-    "prepublishOnly": "npm run build"
+    "playground": "cd playground && bun run dev",
+    "playground:install": "cd playground && bun install",
+    "prepublishOnly": "bun run build"
   },
   "peerDependencies": {
     "react": ">=17.0.0",
