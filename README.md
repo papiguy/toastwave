@@ -1,4 +1,4 @@
-# Toastwave
+# Toastywave
 
 Lightweight React toast notifications with zero CSS dependencies.
 
@@ -15,13 +15,13 @@ Lightweight React toast notifications with zero CSS dependencies.
 ## Install
 
 ```bash
-bun add toastwave
+bun add toastywave
 ```
 
 ## Quick Start
 
 ```jsx
-import { toast, Toaster } from 'toastwave';
+import { toast, Toaster } from 'toastywave';
 
 function App() {
   return (
@@ -102,7 +102,7 @@ toast.error('Upload failed', {
 #### Registering Custom Presets
 
 ```js
-import { registerActionPreset } from 'toastwave';
+import { registerActionPreset } from 'toastywave';
 
 registerActionPreset('retry', (onRetry) => ({
   label: 'Retry',
@@ -285,7 +285,7 @@ const customTheme = {
 ### Utilities
 
 ```js
-import { darkTheme, lightTheme, resolveTheme } from 'toastwave';
+import { darkTheme, lightTheme, resolveTheme } from 'toastywave';
 
 // Extend the dark theme
 const custom = resolveTheme({

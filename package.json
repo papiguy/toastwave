@@ -1,5 +1,5 @@
 {
-  "name": "toastwave",
+  "name": "toastywave",
   "version": "0.1.0",
   "description": "Lightweight React toast notifications with deduplication, countdown timers, theming, and container scoping.",
   "main": "dist/index.cjs.js",
@@ -43,7 +43,7 @@
     "react",
     "toast",
     "notification",
-    "toastwave",
+    "toastywave",
     "snackbar",
     "alert",
     "lightweight",
@@ -52,7 +52,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/papiguy/toastwave"
+    "url": "https://github.com/papiguy/toastywave"
   },
   "license": "MIT",
   "author": "",

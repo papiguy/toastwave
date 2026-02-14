@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      toastwave: path.resolve(__dirname, "../dist/index.esm.js"),
+      toastywave: path.resolve(__dirname, "../dist/index.esm.js"),
     },
   },
   server: {
@@ -17,6 +17,6 @@ export default defineConfig({
   },
   optimizeDeps: {
     // Force re-optimization when dist changes
-    exclude: ["toastwave"],
+    exclude: ["toastywave"],
   },
 });

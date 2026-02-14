@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { toast, Toaster, registerActionPreset, darkTheme, lightTheme } from "toastwave";
+import { toast, Toaster, registerActionPreset, darkTheme, lightTheme } from "toastywave";
 import {
   RocketLaunchIcon,
   SparklesIcon,
@@ -183,7 +183,7 @@ export default function App() {
 
       {/* Header */}
       <header style={styles.header}>
-        <h1 style={styles.title}>Toastwave Playground</h1>
+        <h1 style={styles.title}>Toastywave Playground</h1>
         <p style={styles.subtitle}>
           Explore all features of the lightweight React toast notification library
         </p>
@@ -548,7 +548,7 @@ export default function App() {
 
       {/* Footer */}
       <footer style={{ textAlign: "center", marginTop: 64, color: "rgba(255,255,255,.3)", fontSize: 13 }}>
-        <p>Toastwave v0.1.0 - Lightweight React Toast Notifications</p>
+        <p>Toastywave v0.1.0 - Lightweight React Toast Notifications</p>
       </footer>
     </div>
   );

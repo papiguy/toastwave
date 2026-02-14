@@ -8,7 +8,7 @@
         "@heroicons/react": "^2.2.0",
         "react": "^18.3.0",
         "react-dom": "^18.3.0",
-        "toastwave": "file:..",
+        "toastywave": "file:..",
       },
       "devDependencies": {
         "@vitejs/plugin-react": "^4.3.0",
@@ -463,7 +463,7 @@
 
     "terser": ["terser@5.46.0", "", { "dependencies": { "@jridgewell/source-map": "^0.3.3", "acorn": "^8.15.0", "commander": "^2.20.0", "source-map-support": "~0.5.20" }, "bin": { "terser": "bin/terser" } }, "sha512-jTwoImyr/QbOWFFso3YoU3ik0jBBDJ6JTOQiy/J2YxVJdZCc+5u7skhNwiOR3FQIygFqVUPHl7qbbxtjW2K3Qg=="],
 
-    "toastwave": ["toastwave@file:..", { "devDependencies": { "@babel/core": "^7.24.0", "@babel/preset-env": "^7.24.0", "@babel/preset-react": "^7.23.3", "@rollup/plugin-babel": "^6.0.4", "@rollup/plugin-node-resolve": "^15.2.3", "@rollup/plugin-terser": "^0.4.4", "rollup": "^4.9.0", "rollup-plugin-peer-deps-external": "^2.2.4" }, "peerDependencies": { "react": ">=17.0.0", "react-dom": ">=17.0.0" } }],
+    "toastywave": ["toastywave@file:..", { "devDependencies": { "@babel/core": "^7.24.0", "@babel/preset-env": "^7.24.0", "@babel/preset-react": "^7.23.3", "@rollup/plugin-babel": "^6.0.4", "@rollup/plugin-node-resolve": "^15.2.3", "@rollup/plugin-terser": "^0.4.4", "rollup": "^4.9.0", "rollup-plugin-peer-deps-external": "^2.2.4" }, "peerDependencies": { "react": ">=17.0.0", "react-dom": ">=17.0.0" } }],
 
     "unicode-canonical-property-names-ecmascript": ["unicode-canonical-property-names-ecmascript@2.0.1", "", {}, "sha512-dA8WbNeb2a6oQzAQ55YlT5vQAWGV9WXOsi3SskE3bcCdM0P4SDd+24zS/OCacdRq5BkdsRj9q3Pg6YyQoxIGqg=="],
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Toastwave is a lightweight (~3KB) React toast notification library with zero CSS dependencies. It provides deduplication, countdown timers, theming, container scoping, and promise-based toasts.
+Toastywave is a lightweight (~3KB) React toast notification library with zero CSS dependencies. It provides deduplication, countdown timers, theming, container scoping, and promise-based toasts.
 
 ## Commands
 

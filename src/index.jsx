@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
 
 /* ═══════════════════════════════════════════════════════════════
-   TOASTWAVE - Lightweight React Toast Notification System
+   TOASTYWAVE - Lightweight React Toast Notification System
    ═══════════════════════════════════════════════════════════════ */
 
 // ── Internal State ──────────────────────────────────────────────
@@ -233,7 +233,7 @@ const InfoIcon = () => (
   </svg>
 );
 const LoadingIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ animation: "toastwave-spin .7s linear infinite" }}>
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ animation: "toastywave-spin .7s linear infinite" }}>
     <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.8" opacity=".15" />
     <path d="M10 2a8 8 0 018 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" opacity=".5" />
   </svg>
@@ -548,7 +548,7 @@ function Toaster({ position = "bottom-right", theme = "dark", container }) {
         ...(isCenter ? { left: 0, right: 0 } : hPos === "left" ? { left: 0 } : { right: 0 }),
       }}
     >
-      <style>{`@keyframes toastwave-spin{to{transform:rotate(360deg)}}`}</style>
+      <style>{`@keyframes toastywave-spin{to{transform:rotate(360deg)}}`}</style>
       {toasts.map((t) => (
         <div key={t.id} style={{ pointerEvents: "auto" }}>
           <ToastItem data={t} onDismiss={dismiss} position={position} theme={resolvedThemeObj} />
