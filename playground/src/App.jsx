@@ -29,6 +29,29 @@ const styles = {
     color: "rgba(255,255,255,.5)",
     fontSize: 16,
   },
+  modeToggle: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 8,
+    marginBottom: 32,
+  },
+  modeBtn: {
+    padding: "10px 20px",
+    fontSize: 14,
+    fontWeight: 600,
+    fontFamily: "inherit",
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,.12)",
+    background: "rgba(255,255,255,.06)",
+    color: "#e4e4e7",
+    cursor: "pointer",
+    transition: "all .15s ease",
+  },
+  modeBtnActive: {
+    background: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
+    border: "1px solid transparent",
+    color: "#fff",
+  },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
@@ -89,11 +112,11 @@ const styles = {
   },
   scopedContainer: {
     background: "rgba(0,0,0,.3)",
-    border: "1px solid rgba(255,255,255,.1)",
+    border: "2px solid rgba(74, 222, 128, 0.3)",
     borderRadius: 12,
     padding: 20,
     position: "relative",
-    minHeight: 200,
+    minHeight: 300,
     overflow: "hidden",
   },
   badge: {
@@ -107,9 +130,19 @@ const styles = {
     textTransform: "uppercase",
     letterSpacing: "0.5px",
   },
+  scopedNote: {
+    background: "rgba(74, 222, 128, 0.1)",
+    border: "1px solid rgba(74, 222, 128, 0.2)",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+    fontSize: 13,
+    color: "rgba(255,255,255,.7)",
+  },
 };
 
 export default function App() {
+  const [mode, setMode] = useState("global"); // "global" or "scoped"
   const [position, setPosition] = useState("bottom-right");
   const [theme, setTheme] = useState("dark");
   const scopedRef = useRef(null);
@@ -123,11 +156,23 @@ export default function App() {
   };
 
   const currentTheme = theme === "custom" ? customTheme : theme;
+  const isScoped = mode === "scoped";
 
   return (
     <div style={styles.container}>
-      {/* Global Toaster */}
-      <Toaster position={position} theme={currentTheme} />
+      {/* Toaster - either global or scoped based on mode */}
+      {isScoped ? (
+        <div style={styles.scopedContainer} ref={scopedRef}>
+          <Toaster position={position} theme={currentTheme} container={scopedRef} />
+          <div style={styles.scopedNote}>
+            <strong>Scoped Mode Active</strong> - Toasts appear inside this container instead of the viewport.
+            The container has <code>position: relative</code> and the Toaster uses the <code>container</code> prop.
+          </div>
+          <ScopedContent position={position} theme={theme} styles={styles} />
+        </div>
+      ) : (
+        <Toaster position={position} theme={currentTheme} />
+      )}
 
       {/* Header */}
       <header style={styles.header}>
@@ -137,316 +182,389 @@ export default function App() {
         </p>
       </header>
 
-      {/* Feature Grid */}
-      <div style={styles.grid}>
-        {/* Toast Types */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Toast Types</h2>
-          <p style={styles.cardDesc}>
-            Five built-in toast types for different scenarios. Each has a unique icon and accent color.
-          </p>
-          <div style={styles.btnGroup}>
-            <button style={styles.btn} onClick={() => toast("Default notification")}>
-              Default
-            </button>
-            <button style={styles.btn} onClick={() => toast.success("Operation successful!")}>
-              Success
-            </button>
-            <button style={styles.btn} onClick={() => toast.error("Something went wrong")}>
-              Error
-            </button>
-            <button style={styles.btn} onClick={() => toast.warning("Proceed with caution")}>
-              Warning
-            </button>
-            <button style={styles.btn} onClick={() => toast.info("New update available")}>
-              Info
-            </button>
-            <button style={styles.btn} onClick={() => toast.loading("Processing...")}>
-              Loading
-            </button>
-          </div>
-        </section>
+      {/* Mode Toggle */}
+      <div style={styles.modeToggle}>
+        <button
+          style={{ ...styles.modeBtn, ...(mode === "global" ? styles.modeBtnActive : {}) }}
+          onClick={() => setMode("global")}
+        >
+          Global (Window)
+        </button>
+        <button
+          style={{ ...styles.modeBtn, ...(mode === "scoped" ? styles.modeBtnActive : {}) }}
+          onClick={() => setMode("scoped")}
+        >
+          Container Scoped
+        </button>
+      </div>
 
-        {/* Actions - Presets & Custom */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            Action Buttons
-            <span style={styles.badge}>New</span>
-          </h2>
-          <p style={styles.cardDesc}>
-            Add action buttons using presets ("undo", "retry") or custom configurations.
-          </p>
-          <div style={styles.btnGroup}>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.success("Item deleted", {
-                  action: { preset: "undo", onAction: () => toast.info("Restored!") },
-                })
-              }
-            >
-              Undo Preset
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.error("Request failed", {
-                  action: { preset: "retry", onAction: () => toast.loading("Retrying...") },
-                })
-              }
-            >
-              Retry Preset
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.info("New version available", {
-                  action: { label: "Update Now", onClick: () => toast.success("Updated!") },
-                })
-              }
-            >
-              Custom Action
-            </button>
-          </div>
-        </section>
-
-        {/* Promise Toasts */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Promise Toasts</h2>
-          <p style={styles.cardDesc}>
-            Automatically transition from loading to success/error based on promise resolution.
-          </p>
-          <div style={styles.btnGroup}>
-            <button
-              style={{ ...styles.btn, ...styles.btnPrimary }}
-              onClick={() =>
-                toast.promise(
-                  new Promise((resolve) => setTimeout(resolve, 2000)),
-                  { loading: "Uploading file...", success: "Upload complete!", error: "Upload failed" }
-                )
-              }
-            >
-              Success Promise
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.promise(
-                  new Promise((_, reject) => setTimeout(reject, 2000)),
-                  { loading: "Connecting...", success: "Connected!", error: "Connection failed" }
-                )
-              }
-            >
-              Failing Promise
-            </button>
-          </div>
-        </section>
-
-        {/* Countdown Options */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Countdown Timer</h2>
-          <p style={styles.cardDesc}>
-            Customize or hide the countdown footer. Timer pauses on hover, click to stop.
-          </p>
-          <div style={styles.btnGroup}>
-            <button
-              style={styles.btn}
-              onClick={() => toast.success("Standard countdown")}
-            >
-              Default Timer
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.info("Custom countdown", {
-                  countdownText: "Closing in {seconds}s",
-                  stopText: "Keep open",
-                  pausedText: "Paused",
-                })
-              }
-            >
-              Custom Text
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() => toast.info("Clean look, no timer", { showCountdown: false })}
-            >
-              No Countdown
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() => toast.warning("This stays until dismissed", { duration: Infinity })}
-            >
-              Persistent
-            </button>
-          </div>
-        </section>
-
-        {/* Positioning */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Position</h2>
-          <p style={styles.cardDesc}>
-            Anchor toasts to any corner or center of the screen.
-          </p>
-          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-            <select
-              style={styles.select}
-              value={position}
-              onChange={(e) => setPosition(e.target.value)}
-            >
-              <option value="top-left">Top Left</option>
-              <option value="top-center">Top Center</option>
-              <option value="top-right">Top Right</option>
-              <option value="bottom-left">Bottom Left</option>
-              <option value="bottom-center">Bottom Center</option>
-              <option value="bottom-right">Bottom Right</option>
-            </select>
-            <button
-              style={styles.btn}
-              onClick={() => toast.success(`Position: ${position}`)}
-            >
-              Test Position
-            </button>
-          </div>
-        </section>
-
-        {/* Theming */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Theming</h2>
-          <p style={styles.cardDesc}>
-            Built-in dark/light themes or create custom themes with 18+ tokens.
-          </p>
-          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-            <select
-              style={styles.select}
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-            >
-              <option value="dark">Dark Theme</option>
-              <option value="light">Light Theme</option>
-              <option value="custom">Custom (Purple)</option>
-            </select>
-            <button
-              style={styles.btn}
-              onClick={() => toast.success("Theme preview", { description: `Using ${theme} theme` })}
-            >
-              Preview Theme
-            </button>
-          </div>
-        </section>
-
-        {/* Deduplication */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Deduplication</h2>
-          <p style={styles.cardDesc}>
-            Prevent duplicate toasts from stacking. Click rapidly - only one shows!
-          </p>
-          <div style={styles.btnGroup}>
-            <button
-              style={styles.btn}
-              onClick={() => toast.success("Click me rapidly!", { description: "Only one toast appears" })}
-            >
-              Auto Dedup
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.info("Custom key toast", {
-                  dedupeKey: "my-custom-key",
-                  description: "Same key = same toast",
-                })
-              }
-            >
-              Custom Key
-            </button>
-          </div>
-        </section>
-
-        {/* Description */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Rich Content</h2>
-          <p style={styles.cardDesc}>
-            Add descriptions for additional context below the main message.
-          </p>
-          <div style={styles.btnGroup}>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.success("File uploaded", {
-                  description: "report-2024.pdf (2.4 MB) has been saved to your documents.",
-                })
-              }
-            >
-              With Description
-            </button>
-            <button
-              style={styles.btn}
-              onClick={() =>
-                toast.error("Payment failed", {
-                  description: "Your card was declined. Please try a different payment method.",
-                  action: { label: "Try Again", onClick: () => toast.loading("Processing...") },
-                })
-              }
-            >
-              Full Example
-            </button>
-          </div>
-        </section>
-
-        {/* Container Scoping - Full Width */}
-        <section style={{ ...styles.card, gridColumn: "1 / -1" }}>
-          <h2 style={styles.cardTitle}>Container Scoping</h2>
-          <p style={styles.cardDesc}>
-            Render toasts inside a specific container instead of the viewport. Useful for modals, panels, or embedded widgets.
-          </p>
-          <div style={styles.scopedContainer} ref={scopedRef}>
-            <Toaster position="top-right" theme="dark" container={scopedRef} />
-            <div style={{ marginBottom: 16 }}>
-              <span style={{ ...styles.badge, background: "rgba(74, 222, 128, 0.2)", color: "#4ade80" }}>
-                Scoped Container
-              </span>
+      {/* Feature Grid - only show when in global mode */}
+      {!isScoped && (
+        <div style={styles.grid}>
+          {/* Toast Types */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Toast Types</h2>
+            <p style={styles.cardDesc}>
+              Six built-in toast types for different scenarios. Each has a unique icon and accent color.
+            </p>
+            <div style={styles.btnGroup}>
+              <button style={styles.btn} onClick={() => toast("Default notification")}>
+                Default
+              </button>
+              <button style={styles.btn} onClick={() => toast.success("Operation successful!")}>
+                Success
+              </button>
+              <button style={styles.btn} onClick={() => toast.error("Something went wrong")}>
+                Error
+              </button>
+              <button style={styles.btn} onClick={() => toast.warning("Proceed with caution")}>
+                Warning
+              </button>
+              <button style={styles.btn} onClick={() => toast.info("New update available")}>
+                Info
+              </button>
+              <button style={styles.btn} onClick={() => toast.loading("Processing...")}>
+                Loading
+              </button>
             </div>
-            <p style={{ color: "rgba(255,255,255,.5)", fontSize: 13, marginBottom: 16 }}>
-              Toasts triggered here appear inside this box, not the main viewport.
+          </section>
+
+          {/* Actions - Presets & Custom */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>
+              Action Buttons
+              <span style={styles.badge}>New</span>
+            </h2>
+            <p style={styles.cardDesc}>
+              Add action buttons using presets ("undo", "retry") or custom configurations.
+            </p>
+            <div style={styles.btnGroup}>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.success("Item deleted", {
+                    action: { preset: "undo", onAction: () => toast.info("Restored!") },
+                  })
+                }
+              >
+                Undo Preset
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.error("Request failed", {
+                    action: { preset: "retry", onAction: () => toast.loading("Retrying...") },
+                  })
+                }
+              >
+                Retry Preset
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.info("New version available", {
+                    action: { label: "Update Now", onClick: () => toast.success("Updated!") },
+                  })
+                }
+              >
+                Custom Action
+              </button>
+            </div>
+          </section>
+
+          {/* Promise Toasts */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Promise Toasts</h2>
+            <p style={styles.cardDesc}>
+              Automatically transition from loading to success/error based on promise resolution.
+            </p>
+            <div style={styles.btnGroup}>
+              <button
+                style={{ ...styles.btn, ...styles.btnPrimary }}
+                onClick={() =>
+                  toast.promise(
+                    new Promise((resolve) => setTimeout(resolve, 2000)),
+                    { loading: "Uploading file...", success: "Upload complete!", error: "Upload failed" }
+                  )
+                }
+              >
+                Success Promise
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.promise(
+                    new Promise((_, reject) => setTimeout(reject, 2000)),
+                    { loading: "Connecting...", success: "Connected!", error: "Connection failed" }
+                  )
+                }
+              >
+                Failing Promise
+              </button>
+            </div>
+          </section>
+
+          {/* Countdown Options */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Countdown Timer</h2>
+            <p style={styles.cardDesc}>
+              Customize or hide the countdown footer. Timer pauses on hover, click to stop.
+            </p>
+            <div style={styles.btnGroup}>
+              <button
+                style={styles.btn}
+                onClick={() => toast.success("Standard countdown")}
+              >
+                Default Timer
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.info("Custom countdown", {
+                    countdownText: "Closing in {seconds}s",
+                    stopText: "Keep open",
+                    pausedText: "Paused",
+                  })
+                }
+              >
+                Custom Text
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() => toast.info("Clean look, no timer", { showCountdown: false })}
+              >
+                No Countdown
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() => toast.warning("This stays until dismissed", { duration: Infinity })}
+              >
+                Persistent
+              </button>
+            </div>
+          </section>
+
+          {/* Positioning */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Position</h2>
+            <p style={styles.cardDesc}>
+              Anchor toasts to any corner or center of the screen.
+            </p>
+            <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+              <select
+                style={styles.select}
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+              >
+                <option value="top-left">Top Left</option>
+                <option value="top-center">Top Center</option>
+                <option value="top-right">Top Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="bottom-center">Bottom Center</option>
+                <option value="bottom-right">Bottom Right</option>
+              </select>
+              <button
+                style={styles.btn}
+                onClick={() => toast.success(`Position: ${position}`)}
+              >
+                Test Position
+              </button>
+            </div>
+          </section>
+
+          {/* Theming */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Theming</h2>
+            <p style={styles.cardDesc}>
+              Built-in dark/light themes or create custom themes with 18+ tokens.
+            </p>
+            <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+              <select
+                style={styles.select}
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+              >
+                <option value="dark">Dark Theme</option>
+                <option value="light">Light Theme</option>
+                <option value="custom">Custom (Purple)</option>
+              </select>
+              <button
+                style={styles.btn}
+                onClick={() => toast.success("Theme preview", { description: `Using ${theme} theme` })}
+              >
+                Preview Theme
+              </button>
+            </div>
+          </section>
+
+          {/* Deduplication */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Deduplication</h2>
+            <p style={styles.cardDesc}>
+              Prevent duplicate toasts from stacking. Click rapidly - only one shows!
+            </p>
+            <div style={styles.btnGroup}>
+              <button
+                style={styles.btn}
+                onClick={() => toast.success("Click me rapidly!", { description: "Only one toast appears" })}
+              >
+                Auto Dedup
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.info("Custom key toast", {
+                    dedupeKey: "my-custom-key",
+                    description: "Same key = same toast",
+                  })
+                }
+              >
+                Custom Key
+              </button>
+            </div>
+          </section>
+
+          {/* Description */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Rich Content</h2>
+            <p style={styles.cardDesc}>
+              Add descriptions for additional context below the main message.
+            </p>
+            <div style={styles.btnGroup}>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.success("File uploaded", {
+                    description: "report-2024.pdf (2.4 MB) has been saved to your documents.",
+                  })
+                }
+              >
+                With Description
+              </button>
+              <button
+                style={styles.btn}
+                onClick={() =>
+                  toast.error("Payment failed", {
+                    description: "Your card was declined. Please try a different payment method.",
+                    action: { label: "Try Again", onClick: () => toast.loading("Processing...") },
+                  })
+                }
+              >
+                Full Example
+              </button>
+            </div>
+          </section>
+
+          {/* Programmatic Control */}
+          <section style={styles.card}>
+            <h2 style={styles.cardTitle}>Programmatic Control</h2>
+            <p style={styles.cardDesc}>
+              Dismiss toasts programmatically using their ID.
             </p>
             <div style={styles.btnGroup}>
               <button
                 style={styles.btn}
                 onClick={() => {
-                  // Temporarily switch _addToast to scoped toaster
-                  toast.success("Scoped toast!", { description: "I'm inside the container" });
+                  const id = toast.loading("I can be dismissed...", { duration: Infinity });
+                  setTimeout(() => toast.dismiss(id), 3000);
                 }}
               >
-                Scoped Toast
+                Auto Dismiss (3s)
               </button>
             </div>
-          </div>
-        </section>
-
-        {/* Programmatic Control */}
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Programmatic Control</h2>
-          <p style={styles.cardDesc}>
-            Dismiss toasts programmatically using their ID.
-          </p>
-          <div style={styles.btnGroup}>
-            <button
-              style={styles.btn}
-              onClick={() => {
-                const id = toast.loading("I can be dismissed...", { duration: Infinity });
-                setTimeout(() => toast.dismiss(id), 3000);
-              }}
-            >
-              Auto Dismiss (3s)
-            </button>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      )}
 
       {/* Footer */}
       <footer style={{ textAlign: "center", marginTop: 64, color: "rgba(255,255,255,.3)", fontSize: 13 }}>
         <p>Toastwave v0.1.0 - Lightweight React Toast Notifications</p>
       </footer>
+    </div>
+  );
+}
+
+// Separate component for scoped mode content
+function ScopedContent({ position, theme, styles }) {
+  return (
+    <div style={styles.grid}>
+      <section style={styles.card}>
+        <h2 style={styles.cardTitle}>Scoped Toast Types</h2>
+        <p style={styles.cardDesc}>
+          All toast types work inside the scoped container.
+        </p>
+        <div style={styles.btnGroup}>
+          <button style={styles.btn} onClick={() => toast.success("Scoped success!")}>
+            Success
+          </button>
+          <button style={styles.btn} onClick={() => toast.error("Scoped error!")}>
+            Error
+          </button>
+          <button style={styles.btn} onClick={() => toast.warning("Scoped warning!")}>
+            Warning
+          </button>
+          <button style={styles.btn} onClick={() => toast.info("Scoped info!")}>
+            Info
+          </button>
+        </div>
+      </section>
+
+      <section style={styles.card}>
+        <h2 style={styles.cardTitle}>Scoped with Actions</h2>
+        <p style={styles.cardDesc}>
+          Actions work the same way in scoped mode.
+        </p>
+        <div style={styles.btnGroup}>
+          <button
+            style={styles.btn}
+            onClick={() =>
+              toast.success("Item removed", {
+                action: { preset: "undo", onAction: () => toast.info("Restored!") },
+              })
+            }
+          >
+            With Undo
+          </button>
+          <button
+            style={styles.btn}
+            onClick={() =>
+              toast.info("Scoped toast", {
+                description: "This toast appears inside the container, not the viewport.",
+              })
+            }
+          >
+            With Description
+          </button>
+        </div>
+      </section>
+
+      <section style={{ ...styles.card, gridColumn: "1 / -1" }}>
+        <h2 style={styles.cardTitle}>How Container Scoping Works</h2>
+        <p style={styles.cardDesc}>
+          Pass a ref to your container element. The container must have <code>position: relative</code> (or absolute/fixed).
+        </p>
+        <pre style={{
+          background: "rgba(0,0,0,.4)",
+          padding: 16,
+          borderRadius: 8,
+          fontSize: 13,
+          overflow: "auto",
+          color: "rgba(255,255,255,.8)",
+        }}>
+{`const containerRef = useRef(null);
+
+<div ref={containerRef} style={{ position: 'relative' }}>
+  <Toaster
+    position="top-right"
+    theme="dark"
+    container={containerRef}
+  />
+  <button onClick={() => toast.success('Scoped!')}>
+    Show Toast
+  </button>
+</div>`}
+        </pre>
+      </section>
     </div>
   );
 }
